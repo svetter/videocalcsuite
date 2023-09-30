@@ -3,6 +3,9 @@
     <output-path>$PROJECT_DIR$</output-path>
     <root id="archive" name="VideoCalcSuite.jar">
       <element id="module-output" name="VideoCalcSuite" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" />
+      </element>
     </root>
   </artifact>
 </component>

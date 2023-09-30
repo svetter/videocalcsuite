@@ -213,6 +213,7 @@ public class BitrateGenerator extends JFrame {
 		container.add(calcFilesizeRadiobutton);
 		sizeTextfield.setBounds(FIELD1_X, LINE1_Y, SIZE_FIELD_WIDTH, LINE_HEIGHT);
 		sizeTextfield.setText("");
+		sizeTextfield.setHorizontalAlignment(SwingConstants.RIGHT);
 		sizeTextfield.setFont(new Font("Dialog", Font.PLAIN, 18));
 		sizeTextfield.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent evt) {
@@ -275,6 +276,7 @@ public class BitrateGenerator extends JFrame {
 		container.add(calcTimeRadiobutton);
 		timeHoursTextfield.setBounds(FIELD1_X, LINE2_Y, TIME_FIELD_WIDTH, LINE_HEIGHT);
 		timeHoursTextfield.setText("");
+		timeHoursTextfield.setHorizontalAlignment(SwingConstants.RIGHT);
 		timeHoursTextfield.setFont(new Font("Dialog", Font.PLAIN, 18));
 		timeHoursTextfield.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent evt) {
@@ -290,6 +292,7 @@ public class BitrateGenerator extends JFrame {
 		container.add(timeHoursLabel);
 		timeMinutesTextfield.setBounds(FIELD2_X, LINE2_Y, TIME_FIELD_WIDTH, LINE_HEIGHT);
 		timeMinutesTextfield.setText("");
+		timeMinutesTextfield.setHorizontalAlignment(SwingConstants.RIGHT);
 		timeMinutesTextfield.setFont(new Font("Dialog", Font.PLAIN, 18));
 		timeMinutesTextfield.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent evt) {
@@ -304,6 +307,7 @@ public class BitrateGenerator extends JFrame {
 		container.add(timeMinutesLabel);
 		timeSecondsTextfield.setBounds(FIELD3_X, LINE2_Y, TIME_FIELD_WIDTH, LINE_HEIGHT);
 		timeSecondsTextfield.setText("");
+		timeSecondsTextfield.setHorizontalAlignment(SwingConstants.RIGHT);
 		timeSecondsTextfield.setFont(new Font("Dialog", Font.PLAIN, 18));
 		timeSecondsTextfield.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent evt) {
@@ -332,6 +336,7 @@ public class BitrateGenerator extends JFrame {
 		container.add(calcBitrateRadiobutton);
 		bitrateTextfield.setBounds(FIELD1_X, LINE3_Y, RATE_FIELD_WIDTH, LINE_HEIGHT);
 		bitrateTextfield.setText("");
+		bitrateTextfield.setHorizontalAlignment(SwingConstants.RIGHT);
 		bitrateTextfield.setFont(new Font("Dialog", Font.PLAIN, 18));
 		bitrateTextfield.setEnabled(true);
 		bitrateTextfield.setEditable(false);

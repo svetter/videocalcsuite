@@ -105,6 +105,7 @@ public class BitrateConverter extends JFrame {
 		
 		inputRateTextfield.setBounds(FIELD_X, LINE1_Y, FIELD_WIDTH, LINE_HEIGHT);
 		inputRateTextfield.setText("");
+		inputRateTextfield.setHorizontalAlignment(SwingConstants.RIGHT);
 		inputRateTextfield.setFont(new Font("Dialog", Font.PLAIN, 18));
 		inputRateTextfield.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent evt) {
@@ -143,6 +144,7 @@ public class BitrateConverter extends JFrame {
 		
 		resultRateTextfield.setBounds(EDGE, LINE2_Y, FIELD_WIDTH, LINE_HEIGHT);
 		resultRateTextfield.setText("0");
+		resultRateTextfield.setHorizontalAlignment(SwingConstants.RIGHT);
 		resultRateTextfield.setEditable(false);
 		resultRateTextfield.setFont(new Font("Dialog", Font.PLAIN, 18));
 		resultRateTextfield.setSelectionEnd(0);

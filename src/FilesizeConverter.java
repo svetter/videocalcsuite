@@ -92,6 +92,7 @@ public class FilesizeConverter extends JFrame {
 		
 		inputSizeTextfield.setBounds(EDGE, LINE1_Y, FIELD_WIDTH, LINE_HEIGHT);
 		inputSizeTextfield.setText("");
+		inputSizeTextfield.setHorizontalAlignment(SwingConstants.RIGHT);
 		inputSizeTextfield.setFont(new Font("Dialog", Font.PLAIN, 18));
 		inputSizeTextfield.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent evt) {
@@ -130,6 +131,7 @@ public class FilesizeConverter extends JFrame {
 		
 		resultSizeTextfield.setBounds(EDGE, LINE2_Y, FIELD_WIDTH, LINE_HEIGHT);
 		resultSizeTextfield.setText("0");
+		resultSizeTextfield.setHorizontalAlignment(SwingConstants.RIGHT);
 		resultSizeTextfield.setEditable(false);
 		resultSizeTextfield.setFont(new Font("Dialog", Font.PLAIN, 18));
 		resultSizeTextfield.setSelectionEnd(0);

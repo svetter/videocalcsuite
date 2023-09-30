@@ -143,7 +143,7 @@ public class BitrateConverter extends JFrame {
 		container.add(hSeparator);
 		
 		resultRateTextfield.setBounds(EDGE, LINE2_Y, FIELD_WIDTH, LINE_HEIGHT);
-		resultRateTextfield.setText("0");
+		resultRateTextfield.setText("");
 		resultRateTextfield.setHorizontalAlignment(SwingConstants.RIGHT);
 		resultRateTextfield.setEditable(false);
 		resultRateTextfield.setFont(new Font("Dialog", Font.PLAIN, 18));
@@ -222,8 +222,14 @@ public class BitrateConverter extends JFrame {
 	
 	
 	private void calculate() {
-		double check = Double.parseDouble(inputRateTextfield.getText());
-		if (!(check > 0.)) {
+		double input;
+		try {
+			input = Double.parseDouble(inputRateTextfield.getText());
+		} catch (java.lang.NumberFormatException e) {
+			resultRateTextfield.setText("");
+			return;
+		}
+		if (!(input > 0.)) {
 			resultRateTextfield.setText("0");
 			return;
 		}

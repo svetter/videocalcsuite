@@ -130,7 +130,7 @@ public class FilesizeConverter extends JFrame {
 		container.add(hSeparator);
 		
 		resultSizeTextfield.setBounds(EDGE, LINE2_Y, FIELD_WIDTH, LINE_HEIGHT);
-		resultSizeTextfield.setText("0");
+		resultSizeTextfield.setText("");
 		resultSizeTextfield.setHorizontalAlignment(SwingConstants.RIGHT);
 		resultSizeTextfield.setEditable(false);
 		resultSizeTextfield.setFont(new Font("Dialog", Font.PLAIN, 18));
@@ -179,14 +179,14 @@ public class FilesizeConverter extends JFrame {
 	
 	
 	private void calculate() {
-		double check;
+		double input;
 		try {
-			check = Double.parseDouble(inputSizeTextfield.getText());
+			input = Double.parseDouble(inputSizeTextfield.getText());
 		} catch (java.lang.NumberFormatException e) {
-			resultSizeTextfield.setText("0");
+			resultSizeTextfield.setText("");
 			return;
 		}
-		if (!(check > 0.)) {
+		if (!(input > 0.)) {
 			resultSizeTextfield.setText("0");
 			return;
 		}

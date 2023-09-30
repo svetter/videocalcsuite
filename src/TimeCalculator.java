@@ -1,130 +1,128 @@
 package vcs;
 
-import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+
+import static vcs.Helper.AUTHOR_STRING;
 
 
 
 /**
- * @version 1.1, 13.02.2021
+ * @version 1.2, 2023-09-30
  * @author Simon Vetter
  */
 public class TimeCalculator extends JFrame {
-	private static final long serialVersionUID = 8078398186529547364L;
+	public static final int	TITLE_HEIGHT		= 55;
+	public static final int	LINE_HEIGHT			= 35;
+	public static final int	BUTTON_HEIGHT		= 30;
+	public static final int	ACTIVATE_HEIGHT		= 20;
+	
+	public static final int	FIELD_WIDTH			= 80;
+	public static final int	HOURS_TEXT_WIDTH	= 20;
+	public static final int	MINUTES_TEXT_WIDTH	= 35;
+	public static final int	SECONDS_TEXT_WIDTH	= 20;
+	public static final int	ACTIVATE_WIDTH		= 70;
+	
+	public static final int	MOVE_WIDTH			= 85;
+	public static final int	SWAP_WIDTH			= 55;
+	
+	
+	public static final int	TITLE_GAP			= 5;
+	public static final int	EDGE				= 15;
+	public static final int	X_GAP				= 15;
+	public static final int	Y_GAP				= 10;
+	public static final int	BOX_GAP				= 10;
+	
+	
+	public static final int	ACTIVATE_X_OFFSET	= 5;
+	public static final int	FIELD_TEXT_GAP		= 5;
+	public static final int	TEXT_FIELD_GAP		= 5;
 	
 	
 	
-	public static final int	TITLE_HEIGHT			= 55;
-	public static final int	LINE_HEIGHT				= 35;
-	public static final int	BUTTON_HEIGHT			= 30;
-	public static final int	ACTIVATE_HEIGHT			= 20;
-
-	public static final int	FIELD_WIDTH				= 80;
-	public static final int	HOURS_TEXT_WIDTH		= 20;
-	public static final int	MINUTES_TEXT_WIDTH		= 35;
-	public static final int	SECONDS_TEXT_WIDTH		= 20;
-	public static final int	ACTIVATE_WIDTH			= 70;
+	public static final int	BOX_LEFT_X			= EDGE;
 	
-	public static final int	MOVE_WIDTH				= 85;
-	public static final int	SWAP_WIDTH				= 55;
+	public static final int	HOURS_X				= BOX_LEFT_X + BOX_GAP;
+	public static final int	HOURS_TEXT_X		= HOURS_X + FIELD_WIDTH + FIELD_TEXT_GAP;
+	public static final int	MINUTES_X			= HOURS_TEXT_X + HOURS_TEXT_WIDTH + TEXT_FIELD_GAP;
+	public static final int	MINUTES_TEXT_X		= MINUTES_X + FIELD_WIDTH + FIELD_TEXT_GAP;
+	public static final int	SECONDS_X			= MINUTES_TEXT_X + MINUTES_TEXT_WIDTH + TEXT_FIELD_GAP;
+	public static final int	SECONDS_TEXT_X		= SECONDS_X + FIELD_WIDTH + FIELD_TEXT_GAP;
 	
-
-	public static final int	TITLE_GAP				= 5;
-	public static final int	EDGE					= 15;
-	public static final int	X_GAP					= 15;
-	public static final int	Y_GAP					= 10;
-	public static final int	BOX_GAP					= 10;
+	public static final int	BOX_RIGHT_X			= SECONDS_TEXT_X + SECONDS_TEXT_WIDTH + BOX_GAP;
+	public static final int	BOX_WIDTH			= BOX_RIGHT_X - BOX_LEFT_X;
+	public static final int	OPERATOR_WIDTH		= BOX_WIDTH - BOX_GAP*2;
 	
-
-	public static final int	ACTIVATE_X_OFFSET		= 5;
-	public static final int	FIELD_TEXT_GAP			= 5;
-	public static final int	TEXT_FIELD_GAP			= 5;
+	public static final int	MOVE_LEFT_X			= BOX_RIGHT_X + X_GAP;
+	public static final int	MOVE_RIGHT_X		= MOVE_LEFT_X + MOVE_WIDTH;
+	public static final int	SWAP_RIGHT_X		= MOVE_RIGHT_X;
+	public static final int	SWAP_LEFT_X			= SWAP_RIGHT_X - SWAP_WIDTH;
+	public static final int	SWAP_LINES_WIDTH	= MOVE_WIDTH - SWAP_WIDTH;
 	
 	
+	public static final int	BOX_TOP_Y			= TITLE_HEIGHT + TITLE_GAP;
 	
-	public static final int	BOX_LEFT_X				= EDGE;
+	public static final int	LINE1_Y				= BOX_TOP_Y + BOX_GAP;
+	public static final int	OPERATOR_Y			= LINE1_Y + LINE_HEIGHT + Y_GAP;
+	public static final int	LINE2_Y				= OPERATOR_Y + BUTTON_HEIGHT + Y_GAP;
+	public static final int	SEP_Y				= LINE2_Y + LINE_HEIGHT + Y_GAP;
+	public static final int	LINE3_Y				= SEP_Y + BUTTON_HEIGHT + Y_GAP;
+	public static final int	ACTIVATE_Y			= LINE3_Y + LINE_HEIGHT;
 	
-	public static final int	HOURS_X					= BOX_LEFT_X + BOX_GAP;
-	public static final int	HOURS_TEXT_X			= HOURS_X + FIELD_WIDTH + FIELD_TEXT_GAP;
-	public static final int	MINUTES_X				= HOURS_TEXT_X + HOURS_TEXT_WIDTH + TEXT_FIELD_GAP;
-	public static final int	MINUTES_TEXT_X			= MINUTES_X + FIELD_WIDTH + FIELD_TEXT_GAP;
-	public static final int	SECONDS_X				= MINUTES_TEXT_X + MINUTES_TEXT_WIDTH + TEXT_FIELD_GAP;
-	public static final int	SECONDS_TEXT_X			= SECONDS_X + FIELD_WIDTH + FIELD_TEXT_GAP;
+	public static final int	BOX_BOTTOM_Y		= ACTIVATE_Y + ACTIVATE_HEIGHT + BOX_GAP;
+	public static final int	BOX_HEIGHT			= BOX_BOTTOM_Y - BOX_TOP_Y;
 	
-	public static final int	BOX_RIGHT_X				= SECONDS_TEXT_X + SECONDS_TEXT_WIDTH + BOX_GAP;
-	public static final int	BOX_WIDTH				= BOX_RIGHT_X - BOX_LEFT_X;
-	public static final int	OPERATOR_WIDTH			= BOX_WIDTH - BOX_GAP*2;
+	public static final int	SWAP_TOP_Y			= LINE1_Y + LINE_HEIGHT/2;
+	public static final int	SWAP_BOTTOM_Y		= LINE2_Y + LINE_HEIGHT/2;
+	public static final int	SWAP_HEIGHT			= SWAP_BOTTOM_Y - SWAP_TOP_Y;
 	
-	public static final int	MOVE_LEFT_X				= BOX_RIGHT_X + X_GAP;
-	public static final int	MOVE_RIGHT_X			= MOVE_LEFT_X + MOVE_WIDTH;
-	public static final int	SWAP_RIGHT_X			= MOVE_RIGHT_X;
-	public static final int	SWAP_LEFT_X				= SWAP_RIGHT_X - SWAP_WIDTH;
-	public static final int	SWAP_LINES_WIDTH		= MOVE_WIDTH - SWAP_WIDTH;
-	
-	
-	public static final int	BOX_TOP_Y				= TITLE_HEIGHT + TITLE_GAP;
-	
-	public static final int	LINE1_Y					= BOX_TOP_Y + BOX_GAP;
-	public static final int	OPERATOR_Y				= LINE1_Y + LINE_HEIGHT + Y_GAP;
-	public static final int	LINE2_Y					= OPERATOR_Y + BUTTON_HEIGHT + Y_GAP;
-	public static final int	SEP_Y					= LINE2_Y + LINE_HEIGHT + Y_GAP;
-	public static final int	LINE3_Y					= SEP_Y + BUTTON_HEIGHT + Y_GAP;
-	public static final int	ACTIVATE_Y				= LINE3_Y + LINE_HEIGHT;
-	
-	public static final int	BOX_BOTTOM_Y			= ACTIVATE_Y + ACTIVATE_HEIGHT + BOX_GAP;
-	public static final int	BOX_HEIGHT				= BOX_BOTTOM_Y - BOX_TOP_Y;
-	
-	public static final int	SWAP_TOP_Y				= LINE1_Y + LINE_HEIGHT/2;
-	public static final int	SWAP_BOTTOM_Y			= LINE2_Y + LINE_HEIGHT/2;
-	public static final int	SWAP_HEIGHT				= SWAP_BOTTOM_Y - SWAP_TOP_Y;
-	
-	public static final int	MOVE1_TOP_Y				= LINE3_Y - 3;
-	public static final int	MOVE1_BOTTOM_Y			= LINE3_Y + LINE_HEIGHT/2;
-	public static final int	MOVE2_TOP_Y				= LINE3_Y + LINE_HEIGHT/2;
-	public static final int	MOVE2_BOTTOM_Y			= LINE3_Y + LINE_HEIGHT + 3;
-	public static final int	MOVE_HEIGHT				= MOVE1_BOTTOM_Y - MOVE1_TOP_Y;
+	public static final int	MOVE1_TOP_Y			= LINE3_Y - 3;
+	public static final int	MOVE1_BOTTOM_Y		= LINE3_Y + LINE_HEIGHT/2;
+	public static final int	MOVE2_TOP_Y			= LINE3_Y + LINE_HEIGHT/2;
+	public static final int	MOVE_HEIGHT			= MOVE1_BOTTOM_Y - MOVE1_TOP_Y;
 	
 	
-	public static final int	WIDTH					= MOVE_RIGHT_X + EDGE;
-	public static final int	HEIGHT					= BOX_BOTTOM_Y + EDGE;
+	public static final int	WIDTH				= MOVE_RIGHT_X + EDGE;
+	public static final int	HEIGHT				= BOX_BOTTOM_Y + EDGE;
 	
 	
-	private JLabel			Text_Title				= new JLabel();
-	private JTextField		Time_hours_given1		= new JTextField();
-	private JLabel			Text_l1_h				= new JLabel();
-	private JTextField		Time_minutes_given1		= new JTextField();
-	private JLabel			Text_l1_min				= new JLabel();
-	private JTextField		Time_seconds_given1		= new JTextField();
-	private JLabel			Text_l1_s				= new JLabel();
-	private JButton 		switchMode_Button		= new JButton();
-	private JSeparator		Seperator_h_top			= new JSeparator();
-	private JSeparator		Seperator_v_left		= new JSeparator();
-	private JSeparator		Seperator_v_right		= new JSeparator();
-	private JTextField		Time_hours_given2		= new JTextField();
-	private JLabel			Text_l2_h				= new JLabel();
-	private JTextField		Time_minutes_given2		= new JTextField();
-	private JLabel			Text_l2_min				= new JLabel();
-	private JTextField		Time_seconds_given2		= new JTextField();
-	private JLabel			Text_l2_s				= new JLabel();
-	private JButton			Button_equals_nf		= new JButton();
-	private JButton			swapButton				= new JButton();
-	private JSeparator		Seperator_swap_top		= new JSeparator();
-	private JSeparator		Seperator_swap_bottom	= new JSeparator();
-	private JTextField		Time_hours_wanted		= new JTextField();
-	private JLabel			Text_l3_h				= new JLabel();
-	private JTextField		Time_minutes_wanted		= new JTextField();
-	private JLabel			Text_l3_min				= new JLabel();
-	private JTextField		Time_seconds_wanted		= new JTextField();
-	private JLabel			Text_l3_s				= new JLabel();
-	private JCheckBox		activate_hours			= new JCheckBox();
-	private JCheckBox		activate_minutes		= new JCheckBox();
-	private JCheckBox		activate_seconds		= new JCheckBox();
-	private JSeparator		Seperator_h_bottom		= new JSeparator();
-	private JButton			moveWayUpButton			= new JButton();
-	private JButton			moveUpButton			= new JButton();
+	private final JLabel		titleLabel					= new JLabel();
+	private final JTextField	line1HoursTextfield			= new JTextField();
+	private final JLabel		line1HoursLabel				= new JLabel();
+	private final JTextField	line1MinutesTextfield		= new JTextField();
+	private final JLabel		line1MinutesLabel			= new JLabel();
+	private final JTextField	line1SecondsTextfield		= new JTextField();
+	private final JLabel		line1SecondsLabel			= new JLabel();
+	private final JButton		switchModeButton			= new JButton();
+	private final JSeparator	hTopSeparator				= new JSeparator();
+	private final JSeparator	vLeftSeparator				= new JSeparator();
+	private final JSeparator	vRightSeparator				= new JSeparator();
+	private final JTextField	line2HoursTextfield			= new JTextField();
+	private final JLabel		line2HoursLabel				= new JLabel();
+	private final JTextField	line2MinutesTextfield		= new JTextField();
+	private final JLabel		line2MinutesLabel			= new JLabel();
+	private final JTextField	line2SecondsTextfield		= new JTextField();
+	private final JLabel		line2SecondsLabel			= new JLabel();
+	private final JButton		calcButton					= new JButton();
+	private final JButton		swapButton					= new JButton();
+	private final JSeparator	swapTopSeparator			= new JSeparator();
+	private final JSeparator	swapBottomSeparator			= new JSeparator();
+	private final JTextField	resultHoursTextfield		= new JTextField();
+	private final JLabel		resultHoursLabel			= new JLabel();
+	private final JTextField	resultMinutesTextfield		= new JTextField();
+	private final JLabel		resultMinutesLabel			= new JLabel();
+	private final JTextField	resultSecondsTextfield		= new JTextField();
+	private final JLabel		resultSecondsLabel			= new JLabel();
+	private final JCheckBox		activateHoursCheckbox		= new JCheckBox();
+	private final JCheckBox		activateMinutesCheckbox		= new JCheckBox();
+	private final JCheckBox		activateSecondsCheckbox		= new JCheckBox();
+	private final JSeparator	hBottomSeparator			= new JSeparator();
+	private final JButton		moveToLine1Button			= new JButton();
+	private final JButton		moveToLine2Button			= new JButton();
 	
 	
 	public TimeCalculator(JFrame parent) {
@@ -137,280 +135,255 @@ public class TimeCalculator extends JFrame {
 		container.setLayout(null);
 		
 		
-		Text_Title.setBounds(EDGE, 0, WIDTH - EDGE*2, TITLE_HEIGHT);
-		Text_Title.setText("Time Calculator");
-		Text_Title.setFont(new Font("Dialog", Font.BOLD, 30));
-		Text_Title.setHorizontalTextPosition(SwingConstants.CENTER);
-		Text_Title.setHorizontalAlignment(SwingConstants.CENTER);
-		Text_Title.setToolTipText("v1.1 © Simon Vetter 2021");
-		container.add(Text_Title);
+		titleLabel.setBounds(EDGE, 0, WIDTH - EDGE*2, TITLE_HEIGHT);
+		titleLabel.setText("Time Calculator");
+		titleLabel.setFont(new Font("Dialog", Font.BOLD, 30));
+		titleLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		titleLabel.setToolTipText(AUTHOR_STRING);
+		container.add(titleLabel);
 		
-		Time_hours_given1.setBounds(HOURS_X, LINE1_Y, FIELD_WIDTH, LINE_HEIGHT);
-		Time_hours_given1.setText("");
-		Time_hours_given1.setHorizontalAlignment(SwingConstants.RIGHT);
-		Time_hours_given1.setFont(new Font("Dialog", Font.PLAIN, 18));
-		Time_hours_given1.addKeyListener(new KeyAdapter() {
+		line1HoursTextfield.setBounds(HOURS_X, LINE1_Y, FIELD_WIDTH, LINE_HEIGHT);
+		line1HoursTextfield.setText("");
+		line1HoursTextfield.setHorizontalAlignment(SwingConstants.RIGHT);
+		line1HoursTextfield.setFont(new Font("Dialog", Font.PLAIN, 18));
+		line1HoursTextfield.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent evt) {
-				Helper.sanitiseField(Time_hours_given1, true);
+				Helper.sanitiseField(line1HoursTextfield, true);
 				calculate();
 			}
 		});
-		container.add(Time_hours_given1);
+		container.add(line1HoursTextfield);
 		
-		Text_l1_h.setBounds(HOURS_TEXT_X, LINE1_Y, HOURS_TEXT_WIDTH, LINE_HEIGHT);
-		Text_l1_h.setText("h");
-		Text_l1_h.setFont(new Font("Dialog", Font.PLAIN, 18));
-		Text_l1_h.setHorizontalAlignment(SwingConstants.LEFT);
-		Text_l1_h.setHorizontalTextPosition(SwingConstants.CENTER);
-		container.add(Text_l1_h);
+		line1HoursLabel.setBounds(HOURS_TEXT_X, LINE1_Y, HOURS_TEXT_WIDTH, LINE_HEIGHT);
+		line1HoursLabel.setText("h");
+		line1HoursLabel.setFont(new Font("Dialog", Font.PLAIN, 18));
+		line1HoursLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		line1HoursLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+		container.add(line1HoursLabel);
 		
-		Time_minutes_given1.setBounds(MINUTES_X, LINE1_Y, FIELD_WIDTH, LINE_HEIGHT);
-		Time_minutes_given1.setText("");
-		Time_minutes_given1.setHorizontalAlignment(SwingConstants.RIGHT);
-		Time_minutes_given1.setFont(new Font("Dialog", Font.PLAIN, 18));
-		Time_minutes_given1.addKeyListener(new KeyAdapter() {
+		line1MinutesTextfield.setBounds(MINUTES_X, LINE1_Y, FIELD_WIDTH, LINE_HEIGHT);
+		line1MinutesTextfield.setText("");
+		line1MinutesTextfield.setHorizontalAlignment(SwingConstants.RIGHT);
+		line1MinutesTextfield.setFont(new Font("Dialog", Font.PLAIN, 18));
+		line1MinutesTextfield.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent evt) {
-				Helper.sanitiseField(Time_minutes_given1, true);
+				Helper.sanitiseField(line1MinutesTextfield, true);
 				calculate();
 			}
 		});
-		container.add(Time_minutes_given1);
+		container.add(line1MinutesTextfield);
 		
-		Text_l1_min.setBounds(MINUTES_TEXT_X, LINE1_Y, MINUTES_TEXT_WIDTH, LINE_HEIGHT);
-		Text_l1_min.setText("min");
-		Text_l1_min.setHorizontalTextPosition(SwingConstants.CENTER);
-		Text_l1_min.setFont(new Font("Dialog", Font.PLAIN, 18));
-		container.add(Text_l1_min);
+		line1MinutesLabel.setBounds(MINUTES_TEXT_X, LINE1_Y, MINUTES_TEXT_WIDTH, LINE_HEIGHT);
+		line1MinutesLabel.setText("min");
+		line1MinutesLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+		line1MinutesLabel.setFont(new Font("Dialog", Font.PLAIN, 18));
+		container.add(line1MinutesLabel);
 		
-		Time_seconds_given1.setBounds(SECONDS_X, LINE1_Y, FIELD_WIDTH, LINE_HEIGHT);
-		Time_seconds_given1.setText("");
-		Time_seconds_given1.setHorizontalAlignment(SwingConstants.RIGHT);
-		Time_seconds_given1.setFont(new Font("Dialog", Font.PLAIN, 18));
-		Time_seconds_given1.addKeyListener(new KeyAdapter() {
+		line1SecondsTextfield.setBounds(SECONDS_X, LINE1_Y, FIELD_WIDTH, LINE_HEIGHT);
+		line1SecondsTextfield.setText("");
+		line1SecondsTextfield.setHorizontalAlignment(SwingConstants.RIGHT);
+		line1SecondsTextfield.setFont(new Font("Dialog", Font.PLAIN, 18));
+		line1SecondsTextfield.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent evt) {
-				Helper.sanitiseField(Time_seconds_given1, true);
+				Helper.sanitiseField(line1SecondsTextfield, true);
 				calculate();
 			}
 		});
-		container.add(Time_seconds_given1);
+		container.add(line1SecondsTextfield);
 		
-		Text_l1_s.setBounds(SECONDS_TEXT_X, LINE1_Y, SECONDS_TEXT_WIDTH, LINE_HEIGHT);
-		Text_l1_s.setText("s");
-		Text_l1_s.setHorizontalTextPosition(SwingConstants.CENTER);
-		Text_l1_s.setFont(new Font("Dialog", Font.PLAIN, 18));
-		container.add(Text_l1_s);
+		line1SecondsLabel.setBounds(SECONDS_TEXT_X, LINE1_Y, SECONDS_TEXT_WIDTH, LINE_HEIGHT);
+		line1SecondsLabel.setText("s");
+		line1SecondsLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+		line1SecondsLabel.setFont(new Font("Dialog", Font.PLAIN, 18));
+		container.add(line1SecondsLabel);
 		
-		switchMode_Button.setBounds(HOURS_X, OPERATOR_Y, OPERATOR_WIDTH, BUTTON_HEIGHT);
-		switchMode_Button.setText("+");
-		switchMode_Button.setMargin(new Insets(2, 2, 2, 2));
-		switchMode_Button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				switchMode();
-				calculate();
-			}
+		switchModeButton.setBounds(HOURS_X, OPERATOR_Y, OPERATOR_WIDTH, BUTTON_HEIGHT);
+		switchModeButton.setText("+");
+		switchModeButton.setMargin(new Insets(2, 2, 2, 2));
+		switchModeButton.addActionListener(evt -> {
+			switchMode();
+			calculate();
 		});
-		switchMode_Button.setSelected(false);
-		switchMode_Button.setFont(new Font("Dialog", Font.BOLD, 25));
-		container.add(switchMode_Button);
+		switchModeButton.setSelected(false);
+		switchModeButton.setFont(new Font("Dialog", Font.BOLD, 25));
+		container.add(switchModeButton);
 		
-		Seperator_h_top.setBounds(BOX_LEFT_X, BOX_TOP_Y, BOX_WIDTH + 1, 1);
-		container.add(Seperator_h_top);
+		hTopSeparator.setBounds(BOX_LEFT_X, BOX_TOP_Y, BOX_WIDTH + 1, 1);
+		container.add(hTopSeparator);
 		
-		Seperator_v_left.setBounds(BOX_LEFT_X, BOX_TOP_Y, 1, BOX_HEIGHT + 1);
-		Seperator_v_left.setOrientation(SwingConstants.VERTICAL);
-		container.add(Seperator_v_left);
+		vLeftSeparator.setBounds(BOX_LEFT_X, BOX_TOP_Y, 1, BOX_HEIGHT + 1);
+		vLeftSeparator.setOrientation(SwingConstants.VERTICAL);
+		container.add(vLeftSeparator);
 		
-		Seperator_v_right.setBounds(BOX_RIGHT_X, BOX_TOP_Y + 2, 1, BOX_HEIGHT + 1 - 2);
-		Seperator_v_right.setOrientation(SwingConstants.VERTICAL);
-		container.add(Seperator_v_right);
+		vRightSeparator.setBounds(BOX_RIGHT_X, BOX_TOP_Y + 2, 1, BOX_HEIGHT + 1 - 2);
+		vRightSeparator.setOrientation(SwingConstants.VERTICAL);
+		container.add(vRightSeparator);
 		
-		Seperator_h_bottom.setBounds(BOX_LEFT_X + 2, BOX_BOTTOM_Y, BOX_WIDTH + 1 - 2, 1);
-		container.add(Seperator_h_bottom);
+		hBottomSeparator.setBounds(BOX_LEFT_X + 2, BOX_BOTTOM_Y, BOX_WIDTH + 1 - 2, 1);
+		container.add(hBottomSeparator);
 		
-		Time_hours_given2.setBounds(HOURS_X, LINE2_Y, FIELD_WIDTH, LINE_HEIGHT);
-		Time_hours_given2.setText("");
-		Time_hours_given2.setFont(new Font("Dialog", Font.PLAIN, 18));
-		Time_hours_given2.setHorizontalAlignment(SwingConstants.RIGHT);
-		Time_hours_given2.addKeyListener(new KeyAdapter() {
+		line2HoursTextfield.setBounds(HOURS_X, LINE2_Y, FIELD_WIDTH, LINE_HEIGHT);
+		line2HoursTextfield.setText("");
+		line2HoursTextfield.setFont(new Font("Dialog", Font.PLAIN, 18));
+		line2HoursTextfield.setHorizontalAlignment(SwingConstants.RIGHT);
+		line2HoursTextfield.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent evt) {
-				Helper.sanitiseField(Time_hours_given2, true);
+				Helper.sanitiseField(line2HoursTextfield, true);
 				calculate();
 			}
 		});
-		container.add(Time_hours_given2);
+		container.add(line2HoursTextfield);
 		
-		Text_l2_h.setBounds(HOURS_TEXT_X, LINE2_Y, HOURS_TEXT_WIDTH, LINE_HEIGHT);
-		Text_l2_h.setText("h");
-		Text_l2_h.setFont(new Font("Dialog", Font.PLAIN, 18));
-		Text_l2_h.setHorizontalTextPosition(SwingConstants.CENTER);
-		container.add(Text_l2_h);
+		line2HoursLabel.setBounds(HOURS_TEXT_X, LINE2_Y, HOURS_TEXT_WIDTH, LINE_HEIGHT);
+		line2HoursLabel.setText("h");
+		line2HoursLabel.setFont(new Font("Dialog", Font.PLAIN, 18));
+		line2HoursLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+		container.add(line2HoursLabel);
 		
-		Time_minutes_given2.setBounds(MINUTES_X, LINE2_Y, FIELD_WIDTH, LINE_HEIGHT);
-		Time_minutes_given2.setText("");
-		Time_minutes_given2.setHorizontalAlignment(SwingConstants.RIGHT);
-		Time_minutes_given2.setFont(new Font("Dialog", Font.PLAIN, 18));
-		Time_minutes_given2.addKeyListener(new KeyAdapter() {
+		line2MinutesTextfield.setBounds(MINUTES_X, LINE2_Y, FIELD_WIDTH, LINE_HEIGHT);
+		line2MinutesTextfield.setText("");
+		line2MinutesTextfield.setHorizontalAlignment(SwingConstants.RIGHT);
+		line2MinutesTextfield.setFont(new Font("Dialog", Font.PLAIN, 18));
+		line2MinutesTextfield.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent evt) {
-				Helper.sanitiseField(Time_minutes_given2, true);
+				Helper.sanitiseField(line2MinutesTextfield, true);
 				calculate();
 			}
 		});
-		container.add(Time_minutes_given2);
+		container.add(line2MinutesTextfield);
 		
-		Text_l2_min.setBounds(MINUTES_TEXT_X, LINE2_Y, MINUTES_TEXT_WIDTH, LINE_HEIGHT);
-		Text_l2_min.setText("min");
-		Text_l2_min.setFont(new Font("Dialog", Font.PLAIN, 18));
-		Text_l2_min.setHorizontalTextPosition(SwingConstants.CENTER);
-		container.add(Text_l2_min);
+		line2MinutesLabel.setBounds(MINUTES_TEXT_X, LINE2_Y, MINUTES_TEXT_WIDTH, LINE_HEIGHT);
+		line2MinutesLabel.setText("min");
+		line2MinutesLabel.setFont(new Font("Dialog", Font.PLAIN, 18));
+		line2MinutesLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+		container.add(line2MinutesLabel);
 		
-		Time_seconds_given2.setBounds(SECONDS_X, LINE2_Y, FIELD_WIDTH, LINE_HEIGHT);
-		Time_seconds_given2.setText("");
-		Time_seconds_given2.setHorizontalAlignment(SwingConstants.RIGHT);
-		Time_seconds_given2.setFont(new Font("Dialog", Font.PLAIN, 18));
-		Time_seconds_given2.addKeyListener(new KeyAdapter() {
+		line2SecondsTextfield.setBounds(SECONDS_X, LINE2_Y, FIELD_WIDTH, LINE_HEIGHT);
+		line2SecondsTextfield.setText("");
+		line2SecondsTextfield.setHorizontalAlignment(SwingConstants.RIGHT);
+		line2SecondsTextfield.setFont(new Font("Dialog", Font.PLAIN, 18));
+		line2SecondsTextfield.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent evt) {
-				Helper.sanitiseField(Time_seconds_given2, true);
+				Helper.sanitiseField(line2SecondsTextfield, true);
 				calculate();
 			}
 		});
-		container.add(Time_seconds_given2);
+		container.add(line2SecondsTextfield);
 		
-		Text_l2_s.setBounds(SECONDS_TEXT_X, LINE2_Y, SECONDS_TEXT_WIDTH, LINE_HEIGHT);
-		Text_l2_s.setText("s");
-		Text_l2_s.setFont(new Font("Dialog", Font.PLAIN, 18));
-		Text_l2_s.setHorizontalTextPosition(SwingConstants.CENTER);
-		container.add(Text_l2_s);
+		line2SecondsLabel.setBounds(SECONDS_TEXT_X, LINE2_Y, SECONDS_TEXT_WIDTH, LINE_HEIGHT);
+		line2SecondsLabel.setText("s");
+		line2SecondsLabel.setFont(new Font("Dialog", Font.PLAIN, 18));
+		line2SecondsLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+		container.add(line2SecondsLabel);
 		
-		Button_equals_nf.setBounds(BOX_LEFT_X, SEP_Y, BOX_WIDTH + 1, BUTTON_HEIGHT);
-		Button_equals_nf.setText("=");
-		Button_equals_nf.setMargin(new Insets(2, 2, 2, 2));
-		Button_equals_nf.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				calculate();
-			}
-		});
-		Button_equals_nf.setFont(new Font("Dialog", Font.BOLD, 25));
-		Button_equals_nf.setVerticalAlignment(SwingConstants.CENTER);
-		container.add(Button_equals_nf);
+		calcButton.setBounds(BOX_LEFT_X, SEP_Y, BOX_WIDTH + 1, BUTTON_HEIGHT);
+		calcButton.setText("=");
+		calcButton.setMargin(new Insets(2, 2, 2, 2));
+		calcButton.addActionListener(evt -> calculate());
+		calcButton.setFont(new Font("Dialog", Font.BOLD, 25));
+		calcButton.setVerticalAlignment(SwingConstants.CENTER);
+		container.add(calcButton);
 		
 		swapButton.setBounds(SWAP_LEFT_X, SWAP_TOP_Y, SWAP_WIDTH, SWAP_HEIGHT);
 		swapButton.setText("swap");
 		swapButton.setMargin(new Insets(2, 2, 2, 2));
-		swapButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				swapButton();
-				calculate();
-			}
+		swapButton.addActionListener(evt -> {
+			swapButton();
+			calculate();
 		});
 		swapButton.setFont(new Font("Dialog", Font.BOLD, 16));
 		container.add(swapButton);
 		
-		Seperator_swap_top.setBounds(MOVE_LEFT_X, SWAP_TOP_Y, SWAP_LINES_WIDTH, 1);
-		container.add(Seperator_swap_top);
+		swapTopSeparator.setBounds(MOVE_LEFT_X, SWAP_TOP_Y, SWAP_LINES_WIDTH, 1);
+		container.add(swapTopSeparator);
 		
-		Seperator_swap_bottom.setBounds(MOVE_LEFT_X, SWAP_BOTTOM_Y - 1, SWAP_LINES_WIDTH, 1);
-		container.add(Seperator_swap_bottom);
+		swapBottomSeparator.setBounds(MOVE_LEFT_X, SWAP_BOTTOM_Y - 1, SWAP_LINES_WIDTH, 1);
+		container.add(swapBottomSeparator);
 		
-		Time_hours_wanted.setBounds(HOURS_X, LINE3_Y, FIELD_WIDTH, LINE_HEIGHT);
-		Time_hours_wanted.setText("0");
-		Time_hours_wanted.setEditable(false);
-		Time_hours_wanted.setFont(new Font("Dialog", Font.PLAIN, 18));
-		Time_hours_wanted.setHorizontalAlignment(SwingConstants.RIGHT);
-		container.add(Time_hours_wanted);
+		resultHoursTextfield.setBounds(HOURS_X, LINE3_Y, FIELD_WIDTH, LINE_HEIGHT);
+		resultHoursTextfield.setText("0");
+		resultHoursTextfield.setEditable(false);
+		resultHoursTextfield.setFont(new Font("Dialog", Font.PLAIN, 18));
+		resultHoursTextfield.setHorizontalAlignment(SwingConstants.RIGHT);
+		container.add(resultHoursTextfield);
 		
-		Text_l3_h.setBounds(HOURS_TEXT_X, LINE3_Y, HOURS_TEXT_WIDTH, LINE_HEIGHT);
-		Text_l3_h.setText("h");
-		Text_l3_h.setHorizontalTextPosition(SwingConstants.CENTER);
-		Text_l3_h.setFont(new Font("Dialog", Font.PLAIN, 18));
-		container.add(Text_l3_h);
+		resultHoursLabel.setBounds(HOURS_TEXT_X, LINE3_Y, HOURS_TEXT_WIDTH, LINE_HEIGHT);
+		resultHoursLabel.setText("h");
+		resultHoursLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+		resultHoursLabel.setFont(new Font("Dialog", Font.PLAIN, 18));
+		container.add(resultHoursLabel);
 		
-		Time_minutes_wanted.setBounds(MINUTES_X, LINE3_Y, FIELD_WIDTH, LINE_HEIGHT);
-		Time_minutes_wanted.setText("0");
-		Time_minutes_wanted.setFont(new Font("Dialog", Font.PLAIN, 18));
-		Time_minutes_wanted.setEditable(false);
-		Time_minutes_wanted.setHorizontalAlignment(SwingConstants.RIGHT);
-		container.add(Time_minutes_wanted);
+		resultMinutesTextfield.setBounds(MINUTES_X, LINE3_Y, FIELD_WIDTH, LINE_HEIGHT);
+		resultMinutesTextfield.setText("0");
+		resultMinutesTextfield.setFont(new Font("Dialog", Font.PLAIN, 18));
+		resultMinutesTextfield.setEditable(false);
+		resultMinutesTextfield.setHorizontalAlignment(SwingConstants.RIGHT);
+		container.add(resultMinutesTextfield);
 		
-		Text_l3_min.setBounds(MINUTES_TEXT_X, LINE3_Y, MINUTES_TEXT_WIDTH, LINE_HEIGHT);
-		Text_l3_min.setText("min");
-		Text_l3_min.setHorizontalTextPosition(SwingConstants.CENTER);
-		Text_l3_min.setFont(new Font("Dialog", Font.PLAIN, 18));
-		container.add(Text_l3_min);
+		resultMinutesLabel.setBounds(MINUTES_TEXT_X, LINE3_Y, MINUTES_TEXT_WIDTH, LINE_HEIGHT);
+		resultMinutesLabel.setText("min");
+		resultMinutesLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+		resultMinutesLabel.setFont(new Font("Dialog", Font.PLAIN, 18));
+		container.add(resultMinutesLabel);
 		
-		Time_seconds_wanted.setBounds(SECONDS_X, LINE3_Y, FIELD_WIDTH, LINE_HEIGHT);
-		Time_seconds_wanted.setText("0");
-		Time_seconds_wanted.setHorizontalAlignment(SwingConstants.RIGHT);
-		Time_seconds_wanted.setFont(new Font("Dialog", Font.PLAIN, 18));
-		Time_seconds_wanted.setEditable(false);
-		container.add(Time_seconds_wanted);
+		resultSecondsTextfield.setBounds(SECONDS_X, LINE3_Y, FIELD_WIDTH, LINE_HEIGHT);
+		resultSecondsTextfield.setText("0");
+		resultSecondsTextfield.setHorizontalAlignment(SwingConstants.RIGHT);
+		resultSecondsTextfield.setFont(new Font("Dialog", Font.PLAIN, 18));
+		resultSecondsTextfield.setEditable(false);
+		container.add(resultSecondsTextfield);
 		
-		Text_l3_s.setBounds(SECONDS_TEXT_X, LINE3_Y, SECONDS_TEXT_WIDTH, LINE_HEIGHT);
-		Text_l3_s.setText("s");
-		Text_l3_s.setHorizontalTextPosition(SwingConstants.CENTER);
-		Text_l3_s.setFont(new Font("Dialog", Font.PLAIN, 18));
-		container.add(Text_l3_s);
+		resultSecondsLabel.setBounds(SECONDS_TEXT_X, LINE3_Y, SECONDS_TEXT_WIDTH, LINE_HEIGHT);
+		resultSecondsLabel.setText("s");
+		resultSecondsLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+		resultSecondsLabel.setFont(new Font("Dialog", Font.PLAIN, 18));
+		container.add(resultSecondsLabel);
 		
-		activate_hours.setBounds(HOURS_X + ACTIVATE_X_OFFSET, ACTIVATE_Y, ACTIVATE_WIDTH, ACTIVATE_HEIGHT);
-		activate_hours.setText("activate");
-		activate_hours.setSelected(true);
-		activate_hours.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				manageUnitActivations(activate_hours, activate_minutes, activate_seconds, Time_hours_wanted, Text_l3_h);
-			}
+		activateHoursCheckbox.setBounds(HOURS_X + ACTIVATE_X_OFFSET, ACTIVATE_Y, ACTIVATE_WIDTH, ACTIVATE_HEIGHT);
+		activateHoursCheckbox.setText("activate");
+		activateHoursCheckbox.setSelected(true);
+		activateHoursCheckbox.addActionListener(evt -> manageUnitActivations(activateHoursCheckbox, activateMinutesCheckbox, activateSecondsCheckbox, resultHoursTextfield, resultHoursLabel));
+		container.add(activateHoursCheckbox);
+		
+		activateMinutesCheckbox.setBounds(MINUTES_X + ACTIVATE_X_OFFSET, ACTIVATE_Y, ACTIVATE_WIDTH, ACTIVATE_HEIGHT);
+		activateMinutesCheckbox.setText("activate");
+		activateMinutesCheckbox.setSelected(true);
+		activateMinutesCheckbox.addActionListener(evt -> manageUnitActivations(activateMinutesCheckbox, activateSecondsCheckbox, activateHoursCheckbox, resultMinutesTextfield, resultMinutesLabel));
+		container.add(activateMinutesCheckbox);
+		
+		activateSecondsCheckbox.setBounds(SECONDS_X + ACTIVATE_X_OFFSET, ACTIVATE_Y, ACTIVATE_WIDTH, ACTIVATE_HEIGHT);
+		activateSecondsCheckbox.setText("activate");
+		activateSecondsCheckbox.setSelected(true);
+		activateSecondsCheckbox.addActionListener(evt -> manageUnitActivations(activateSecondsCheckbox, activateHoursCheckbox, activateMinutesCheckbox, resultSecondsTextfield, resultSecondsLabel));
+		container.add(activateSecondsCheckbox);
+		
+		moveToLine1Button.setBounds(MOVE_LEFT_X, MOVE1_TOP_Y, MOVE_WIDTH, MOVE_HEIGHT);
+		moveToLine1Button.setText("move way up");
+		moveToLine1Button.setMargin(new Insets(2, 2, 2, 2));
+		moveToLine1Button.addActionListener(evt -> {
+			moveWayUp();
+			calculate();
 		});
-		container.add(activate_hours);
+		moveToLine1Button.setHorizontalTextPosition(SwingConstants.CENTER);
+		moveToLine1Button.setFont(new Font("Dialog", Font.PLAIN, 12));
+		container.add(moveToLine1Button);
 		
-		activate_minutes.setBounds(MINUTES_X + ACTIVATE_X_OFFSET, ACTIVATE_Y, ACTIVATE_WIDTH, ACTIVATE_HEIGHT);
-		activate_minutes.setText("activate");
-		activate_minutes.setSelected(true);
-		activate_minutes.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				manageUnitActivations(activate_minutes, activate_seconds, activate_hours, Time_minutes_wanted, Text_l3_min);
-			}
+		moveToLine2Button.setBounds(MOVE_LEFT_X, MOVE2_TOP_Y, MOVE_WIDTH, MOVE_HEIGHT);
+		moveToLine2Button.setText("move up");
+		moveToLine2Button.setMargin(new Insets(2, 2, 2, 2));
+		moveToLine2Button.addActionListener(evt -> {
+			moveUp();
+			calculate();
 		});
-		container.add(activate_minutes);
-		
-		activate_seconds.setBounds(SECONDS_X + ACTIVATE_X_OFFSET, ACTIVATE_Y, ACTIVATE_WIDTH, ACTIVATE_HEIGHT);
-		activate_seconds.setText("activate");
-		activate_seconds.setSelected(true);
-		activate_seconds.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				manageUnitActivations(activate_seconds, activate_hours, activate_minutes, Time_seconds_wanted, Text_l3_s);
-			}
-		});
-		container.add(activate_seconds);
-		
-		moveWayUpButton.setBounds(MOVE_LEFT_X, MOVE1_TOP_Y, MOVE_WIDTH, MOVE_HEIGHT);
-		moveWayUpButton.setText("move way up");
-		moveWayUpButton.setMargin(new Insets(2, 2, 2, 2));
-		moveWayUpButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				moveWayUp();
-				calculate();
-			}
-		});
-		moveWayUpButton.setHorizontalTextPosition(SwingConstants.CENTER);
-		moveWayUpButton.setFont(new Font("Dialog", Font.PLAIN, 12));
-		container.add(moveWayUpButton);
-		
-		moveUpButton.setBounds(MOVE_LEFT_X, MOVE2_TOP_Y, MOVE_WIDTH, MOVE_HEIGHT);
-		moveUpButton.setText("move up");
-		moveUpButton.setMargin(new Insets(2, 2, 2, 2));
-		moveUpButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				moveUp();
-				calculate();
-			}
-		});
-		moveUpButton.setHorizontalTextPosition(SwingConstants.CENTER);
-		moveUpButton.setFont(new Font("Dialog", Font.PLAIN, 12));
-		container.add(moveUpButton);
+		moveToLine2Button.setHorizontalTextPosition(SwingConstants.CENTER);
+		moveToLine2Button.setFont(new Font("Dialog", Font.PLAIN, 12));
+		container.add(moveToLine2Button);
 		
 		
 		setTooltips();
 		setVisible(true);
 	}
-	
 	
 	
 	
@@ -430,37 +403,36 @@ public class TimeCalculator extends JFrame {
 	}
 	
 	
-
+	
 	private void calculate() {
-		double input_h1		= Helper.parseDouble(Time_hours_given1.getText());
-		double input_min1	= Helper.parseDouble(Time_minutes_given1.getText());
-		double input_s1		= Helper.parseDouble(Time_seconds_given1.getText());
+		double input_h1		= Helper.parseDouble(line1HoursTextfield.getText());
+		double input_min1	= Helper.parseDouble(line1MinutesTextfield.getText());
+		double input_s1		= Helper.parseDouble(line1SecondsTextfield.getText());
 		
 		BigDecimal hours1	= BigDecimal.valueOf(input_h1);
 		BigDecimal minutes1	= BigDecimal.valueOf(input_min1);
 		BigDecimal seconds1	= BigDecimal.valueOf(input_s1);
 		
-		if (switchMode_Button.getText().equals("")) {
+		if (switchModeButton.getText().isEmpty()) {
 			doConversion(hours1, minutes1, seconds1);
 			return;
 		}
 		
-		double input_h2		= Helper.parseDouble(Time_hours_given2.getText());
-		double input_min2	= Helper.parseDouble(Time_minutes_given2.getText());
-		double input_s2		= Helper.parseDouble(Time_seconds_given2.getText());
+		double input_h2		= Helper.parseDouble(line2HoursTextfield.getText());
+		double input_min2	= Helper.parseDouble(line2MinutesTextfield.getText());
+		double input_s2		= Helper.parseDouble(line2SecondsTextfield.getText());
 		
 		BigDecimal hours2	= BigDecimal.valueOf(input_h2);
 		BigDecimal minutes2	= BigDecimal.valueOf(input_min2);
 		BigDecimal seconds2	= BigDecimal.valueOf(input_s2);
-
-		if (switchMode_Button.getText().equals("+")) {
+		
+		if (switchModeButton.getText().equals("+")) {
 			doAddition(hours1, minutes1, seconds1, hours2, minutes2, seconds2);
 			return;
 		}
-
-		if (switchMode_Button.getText().equals("–")) {
+		
+		if (switchModeButton.getText().equals("–")) {
 			doSubtraction(hours1, minutes1, seconds1, hours2, minutes2, seconds2);
-			return;
 		}
 	}
 	
@@ -497,10 +469,10 @@ public class TimeCalculator extends JFrame {
 	}
 	
 	private void setTextFields(BigDecimal seconds) {
-		if (!activate_hours.isSelected() && !activate_minutes.isSelected()) {
-			Time_hours_wanted.setText("0");
-			Time_hours_wanted.setText("0");
-			Time_seconds_wanted.setText(seconds.toString());
+		if (!activateHoursCheckbox.isSelected() && !activateMinutesCheckbox.isSelected()) {
+			resultHoursTextfield.setText("0");
+			resultHoursTextfield.setText("0");
+			resultSecondsTextfield.setText(seconds.toString());
 			return;
 		}
 		
@@ -509,18 +481,18 @@ public class TimeCalculator extends JFrame {
 			seconds = seconds.subtract(new BigDecimal(60));
 			minutes = minutes.add(new BigDecimal(1));
 		}
-		if (!activate_hours.isSelected() && activate_minutes.isSelected() && activate_seconds.isSelected()) {
-			Time_hours_wanted.setText("0");
-			Time_minutes_wanted.setText(minutes.toString());
-			Time_seconds_wanted.setText(seconds.toString());
+		if (!activateHoursCheckbox.isSelected() && activateMinutesCheckbox.isSelected() && activateSecondsCheckbox.isSelected()) {
+			resultHoursTextfield.setText("0");
+			resultMinutesTextfield.setText(minutes.toString());
+			resultSecondsTextfield.setText(seconds.toString());
 			return;
 		}
 		
-		if (!activate_hours.isSelected() && activate_minutes.isSelected() && !activate_seconds.isSelected()) {
-			Time_hours_wanted.setText("0");
-			Time_minutes_wanted.setText(
+		if (!activateHoursCheckbox.isSelected() && activateMinutesCheckbox.isSelected() && !activateSecondsCheckbox.isSelected()) {
+			resultHoursTextfield.setText("0");
+			resultMinutesTextfield.setText(
 					minutes.add(seconds.divide(new BigDecimal(60), 2, RoundingMode.HALF_UP)).toString());
-			Time_seconds_wanted.setText("0");
+			resultSecondsTextfield.setText("0");
 			return;
 		}
 		
@@ -528,27 +500,27 @@ public class TimeCalculator extends JFrame {
 			minutes = minutes.subtract(new BigDecimal(60));
 			hours = hours.add(new BigDecimal(1));
 		}
-		if (activate_hours.isSelected() && activate_minutes.isSelected() && !activate_seconds.isSelected()) {
-			Time_hours_wanted.setText(hours.toString());
-			Time_minutes_wanted.setText(
+		if (activateHoursCheckbox.isSelected() && activateMinutesCheckbox.isSelected() && !activateSecondsCheckbox.isSelected()) {
+			resultHoursTextfield.setText(hours.toString());
+			resultMinutesTextfield.setText(
 					minutes.add(seconds.divide(new BigDecimal(60), 2, RoundingMode.HALF_UP)).toString());
-			Time_seconds_wanted.setText("0");
+			resultSecondsTextfield.setText("0");
 			return;
 		}
 		
-		if (activate_hours.isSelected() && !activate_minutes.isSelected() && !activate_seconds.isSelected()) {
-			Time_hours_wanted.setText(
+		if (activateHoursCheckbox.isSelected() && !activateMinutesCheckbox.isSelected() && !activateSecondsCheckbox.isSelected()) {
+			resultHoursTextfield.setText(
 					hours.add(minutes.add(seconds.divide(new BigDecimal(60), 2, RoundingMode.HALF_UP))
 							.divide(new BigDecimal(60), 2, RoundingMode.HALF_UP)).toString());
-			Time_minutes_wanted.setText("0");
-			Time_seconds_wanted.setText("0");
+			resultMinutesTextfield.setText("0");
+			resultSecondsTextfield.setText("0");
 			return;
 		}
 		
-		if (activate_hours.isSelected() && !activate_minutes.isSelected() && activate_seconds.isSelected()) {
-			Time_hours_wanted.setText(hours.toString());
-			Time_minutes_wanted.setText("0");
-			Time_seconds_wanted.setText(seconds.add(minutes.multiply(new BigDecimal(60))).toString());
+		if (activateHoursCheckbox.isSelected() && !activateMinutesCheckbox.isSelected() && activateSecondsCheckbox.isSelected()) {
+			resultHoursTextfield.setText(hours.toString());
+			resultMinutesTextfield.setText("0");
+			resultSecondsTextfield.setText(seconds.add(minutes.multiply(new BigDecimal(60))).toString());
 			return;
 		}
 		
@@ -556,96 +528,92 @@ public class TimeCalculator extends JFrame {
 		String minutesText = minutes.toString();
 		String secondsText = seconds.toString();
 		if (secondsText.endsWith(".0")) {
-			secondsText = secondsText.split(".")[0];
+			secondsText = secondsText.split("\\.")[0];
 		}
-		Time_hours_wanted.setText(hoursText);
-		Time_minutes_wanted.setText(minutesText);
-		Time_seconds_wanted.setText(secondsText);
+		resultHoursTextfield.setText(hoursText);
+		resultMinutesTextfield.setText(minutesText);
+		resultSecondsTextfield.setText(secondsText);
 	}
-
+	
 	private void switchMode() {
-		if (switchMode_Button.getText().equals("")) {
-			switchMode_Button.setText("+");
+		if (switchModeButton.getText().isEmpty()) {
+			switchModeButton.setText("+");
 			setLine2Active(true);
 			return;
 		}
 		
-		if (switchMode_Button.getText().equals("+")) {
-			switchMode_Button.setText("–");
+		if (switchModeButton.getText().equals("+")) {
+			switchModeButton.setText("–");
 			setLine2Active(true);
-			return;
 		}
 		
 		else {
-			switchMode_Button.setText("");
+			switchModeButton.setText("");
 			setLine2Active(false);
-			return;
 		}
 	}
 	
 	private void setLine2Active(boolean active) {
-		Time_hours_given2.setEnabled(active);
-		Text_l2_h.setEnabled(active);
-		Time_minutes_given2.setEnabled(active);
-		Text_l2_min.setEnabled(active);
-		Time_seconds_given2.setEnabled(active);
-		Text_l2_s.setEnabled(active);
+		line2HoursTextfield		.setEnabled(active);
+		line2HoursLabel			.setEnabled(active);
+		line2MinutesTextfield	.setEnabled(active);
+		line2MinutesLabel		.setEnabled(active);
+		line2SecondsTextfield	.setEnabled(active);
+		line2SecondsLabel		.setEnabled(active);
 	}
 	
 	private void swapButton() {
-		String temp_h = Time_hours_given1.getText();
-		String temp_min = Time_minutes_given1.getText();
-		String temp_s = Time_seconds_given1.getText();
-		Time_hours_given1.setText(Time_hours_given2.getText());
-		Time_minutes_given1.setText(Time_minutes_given2.getText());
-		Time_seconds_given1.setText(Time_seconds_given2.getText());
-		Time_hours_given2.setText(temp_h);
-		Time_minutes_given2.setText(temp_min);
-		Time_seconds_given2.setText(temp_s);
+		String temp_h	= line1HoursTextfield.getText();
+		String temp_min	= line1MinutesTextfield.getText();
+		String temp_s	= line1SecondsTextfield.getText();
+		line1HoursTextfield		.setText(line2HoursTextfield.getText());
+		line1MinutesTextfield	.setText(line2MinutesTextfield.getText());
+		line1SecondsTextfield	.setText(line2SecondsTextfield.getText());
+		line2HoursTextfield		.setText(temp_h);
+		line2MinutesTextfield	.setText(temp_min);
+		line2SecondsTextfield	.setText(temp_s);
 	}
 	
 	private void moveWayUp() {
-		Time_hours_given1.setText(Time_hours_wanted.getText());
-		Time_minutes_given1.setText(Time_minutes_wanted.getText());
-		Time_seconds_given1.setText(Time_seconds_wanted.getText());
+		line1HoursTextfield		.setText(resultHoursTextfield.getText());
+		line1MinutesTextfield	.setText(resultMinutesTextfield.getText());
+		line1SecondsTextfield	.setText(resultSecondsTextfield.getText());
 	}
 	
 	private void moveUp() {
-		Time_hours_given2.setText(Time_hours_wanted.getText());
-		Time_minutes_given2.setText(Time_minutes_wanted.getText());
-		Time_seconds_given2.setText(Time_seconds_wanted.getText());
+		line2HoursTextfield		.setText(resultHoursTextfield.getText());
+		line2MinutesTextfield	.setText(resultMinutesTextfield.getText());
+		line2SecondsTextfield	.setText(resultSecondsTextfield.getText());
 	}
 	
 	public void setTooltips() {
-		Time_hours_given1.setToolTipText("Enter the first time period you want to calculate with here");
-		Text_l1_h.setToolTipText("Hours");
-		Time_minutes_given1.setToolTipText("Enter the first time period you want to calculate with here");
-		Text_l1_min.setToolTipText("Minutes");
-		Time_seconds_given1.setToolTipText("Enter the first time period you want to calculate with here");
-		Text_l1_s.setToolTipText("Seconds");
-		switchMode_Button.setToolTipText("Switch between convert, addition and subtraction mode");
-		Time_hours_given2.setToolTipText("Enter the second time period you want to calculate with here");
-		Text_l2_h.setToolTipText("Hours");
-		Time_minutes_given2.setToolTipText("Enter the second time period you want to calculate with here");
-		Text_l2_min.setToolTipText("Minutes");
-		Time_seconds_given2.setToolTipText("Enter the second time period you want to calculate with here");
-		Text_l2_s.setToolTipText("Seconds");
-		Text_l3_h.setToolTipText("Hours");
-		Text_l3_min.setToolTipText("Minutes");
-		Text_l3_s.setToolTipText("Seconds");
-		activate_hours.setToolTipText("Display the amount of full hours in the result");
-		activate_minutes.setToolTipText("Display the amount of full minutes in the result");
-		activate_seconds.setToolTipText("Display the amount of single seconds in the result");
-		swapButton.setToolTipText("Swap the set time periods between lines 1 and 2");
-		moveWayUpButton.setToolTipText("Move result to the first line");
-		moveUpButton.setToolTipText("Move result to the second line");
+		line1HoursTextfield		.setToolTipText("Enter the first time period you want to calculate with here");
+		line1HoursLabel			.setToolTipText("Hours");
+		line1MinutesTextfield	.setToolTipText("Enter the first time period you want to calculate with here");
+		line1MinutesLabel		.setToolTipText("Minutes");
+		line1SecondsTextfield	.setToolTipText("Enter the first time period you want to calculate with here");
+		line1SecondsLabel		.setToolTipText("Seconds");
+		switchModeButton		.setToolTipText("Switch between convert, addition and subtraction mode");
+		line2HoursTextfield		.setToolTipText("Enter the second time period you want to calculate with here");
+		line2HoursLabel			.setToolTipText("Hours");
+		line2MinutesTextfield	.setToolTipText("Enter the second time period you want to calculate with here");
+		line2MinutesLabel		.setToolTipText("Minutes");
+		line2SecondsTextfield	.setToolTipText("Enter the second time period you want to calculate with here");
+		line2SecondsLabel		.setToolTipText("Seconds");
+		resultHoursLabel		.setToolTipText("Hours");
+		resultMinutesLabel		.setToolTipText("Minutes");
+		resultSecondsLabel		.setToolTipText("Seconds");
+		activateHoursCheckbox	.setToolTipText("Display the amount of full hours in the result");
+		activateMinutesCheckbox	.setToolTipText("Display the amount of full minutes in the result");
+		activateSecondsCheckbox	.setToolTipText("Display the amount of single seconds in the result");
+		swapButton				.setToolTipText("Swap the set time periods between lines 1 and 2");
+		moveToLine1Button		.setToolTipText("Move result to the first line");
+		moveToLine2Button		.setToolTipText("Move result to the second line");
 	}
 	
 	
 	
 	public static void main(String[] args) {
-		
 		new TimeCalculator(null);
-		
 	}
 }

@@ -1,22 +1,22 @@
 package vcs;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import javax.swing.JFrame;
-import javax.swing.JTextField;
+import javax.swing.*;
+import java.awt.*;
 
 
 
 /**
- * @version 1.1, 13.02.2021
+ * @version 1.2, 2023-09-30
  * @author Simon Vetter
  */
 public class Helper {
+	public static final int		WIDTH_CORR		= 16;
+	public static final int		HEIGHT_CORR		= 39;
 	
-	public static final int WIDTH_CORR		= 16;
-	public static final int HEIGHT_CORR		= 39;
+	public static final int		WINDOW_GAP		= 20;
 	
-	public static final int WINDOW_GAP		= 20;
+	
+	public static final String	AUTHOR_STRING	= "v1.2 © Simon Vetter 2023";
 	
 	
 	
@@ -29,7 +29,7 @@ public class Helper {
 			frame.setLocation(x, y);
 			return;
 		}
-
+		
 		int parentWidth = parent.getWidth() - 14;
 		int parentHeight = parent.getHeight() - 7;
 		int frameWidth = frame.getWidth() - 14;
@@ -57,7 +57,7 @@ public class Helper {
 		frame.setLocation(x, y);
 	}
 	
-	protected static String sanitiseField(JTextField field, boolean allowMinus) {
+	protected static void sanitiseField(JTextField field, boolean allowMinus) {
 		String text = field.getText().replaceAll("[a-zA-Z]+", "");
 		if (!allowMinus) {
 			text = text.replaceAll("-", "");
@@ -67,7 +67,6 @@ public class Helper {
 		if (!text.equals(field.getText())) {
 			field.setText(text);
 		}
-		return text;
 	}
 	
 	protected static double parseDouble(String text) {
@@ -77,5 +76,4 @@ public class Helper {
 			return 0.;
 		}
 	}
-	
 }

@@ -1,21 +1,22 @@
 package vcs;
 
-import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
+
+import static vcs.Helper.AUTHOR_STRING;
 
 
 
 /**
- * @version 1.1, 13.02.2021
+ * @version 1.2, 2023-09-30
  * @author Simon Vetter
  */
 public class BitrateConverter extends JFrame {
-	private static final long serialVersionUID = -2220702801283818182L;
-	
-	
 	public static final int		WIDTH			= 400;
 	
 	
@@ -35,9 +36,9 @@ public class BitrateConverter extends JFrame {
 	public static final int		FIELD_UNIT_GAP	= 10;
 	public static final int		UNIT_K_GAP		= 10;
 	
-	public static final int		K1_Y_OFFSET		= LINE_HEIGHT*1/4 - K_HEIGHT/2 - 2;
-	public static final int		K2_Y_OFFSET		= LINE_HEIGHT*3/4 - K_HEIGHT/2 + 2;
-	public static final int		SLASH_Y_OFFSET	= LINE_HEIGHT/2 - 24;
+	public static final int		K1_Y_OFFSET		= LINE_HEIGHT * 1/4 - K_HEIGHT / 2 - 2;
+	public static final int		K2_Y_OFFSET		= LINE_HEIGHT * 3/4 - K_HEIGHT / 2 + 2;
+	public static final int		SLASH_Y_OFFSET	= LINE_HEIGHT / 2 - 24;
 	
 	
 	public static final int		FIELD_X			= EDGE;
@@ -52,7 +53,7 @@ public class BitrateConverter extends JFrame {
 	public static final int		LINE1_Y			= TITLE_HEIGHT + TITLE_GAP;
 	public static final int		SEP_Y			= LINE1_Y + LINE_HEIGHT + GAP;
 	public static final int		LINE2_Y			= SEP_Y + GAP;
-
+	
 	public static final int		LINE1_K1_Y		= LINE1_Y + K1_Y_OFFSET;
 	public static final int		LINE1_K2_Y		= LINE1_Y + K2_Y_OFFSET;
 	public static final int		LINE2_K1_Y		= LINE2_Y + K1_Y_OFFSET;
@@ -65,22 +66,22 @@ public class BitrateConverter extends JFrame {
 	
 	
 	
-	private JLabel				Text_Title			= new JLabel();
-	private JTextField			Rate_given			= new JTextField();
-	private JComboBox<String>	Unit_Size_given		= new JComboBox<String>();
-	private JRadioButton		K_given_1024		= new JRadioButton();
-	private JRadioButton		K_given_1000		= new JRadioButton();
-	private ButtonGroup			K_given				= new ButtonGroup();
-	private JSeparator			horizontalLine		= new JSeparator();
-	private JTextField			Rate_wanted			= new JTextField();
-	private JComboBox<String>	Unit_Size_wanted	= new JComboBox<String>();
-	private JRadioButton		K_wanted_1024		= new JRadioButton();
-	private JRadioButton		K_wanted_1000		= new JRadioButton();
-	private ButtonGroup			K_wanted			= new ButtonGroup();
-	private JComboBox<String>	Unit_Time_given		= new JComboBox<String>();
-	private JComboBox<String>	Unit_Time_wanted	= new JComboBox<String>();
-	private JLabel				Text_Slash1			= new JLabel();
-	private JLabel				Text_Slash2			= new JLabel();
+	private final JLabel			titleLabel				= new JLabel();
+	private final JTextField		inputRateTextfield		= new JTextField();
+	private final JComboBox<String>	inputSizeUnitCombobox	= new JComboBox<>();
+	private final JRadioButton		inputK1024Radiobutton	= new JRadioButton();
+	private final JRadioButton		inputK1000Radiobutton	= new JRadioButton();
+	private final ButtonGroup		inputKButtongroup		= new ButtonGroup();
+	private final JSeparator		hSeparator				= new JSeparator();
+	private final JTextField		resultRateTextfield		= new JTextField();
+	private final JComboBox<String>	resultSizeUnitCombobox	= new JComboBox<>();
+	private final JRadioButton		resultK1024Radiobutton	= new JRadioButton();
+	private final JRadioButton		resultK1000Radiobutton	= new JRadioButton();
+	private final ButtonGroup		resultKButtongroup		= new ButtonGroup();
+	private final JComboBox<String>	inputTimeUnitCombobox	= new JComboBox<>();
+	private final JComboBox<String>	resultTimeUnitCombobo	= new JComboBox<>();
+	private final JLabel			inputSlashLabel			= new JLabel();
+	private final JLabel			resultSlashLabel		= new JLabel();
 	
 	
 	public BitrateConverter(JFrame parent) {
@@ -93,146 +94,114 @@ public class BitrateConverter extends JFrame {
 		container.setLayout(null);
 		
 		
-		Text_Title.setBounds(EDGE, 0, WIDTH - EDGE*2, TITLE_HEIGHT);
-		Text_Title.setText("Bitrate Converter");
-		Text_Title.setToolTipText("v1.1 © Simon Vetter 2021");
-		Text_Title.setHorizontalTextPosition(SwingConstants.CENTER);
-		Text_Title.setHorizontalAlignment(SwingConstants.CENTER);
-		Text_Title.setFont(new Font("Dialog", Font.BOLD, 30));
-		Text_Title.setEnabled(true);
-		container.add(Text_Title);
+		titleLabel.setBounds(EDGE, 0, WIDTH - EDGE*2, TITLE_HEIGHT);
+		titleLabel.setText("Bitrate Converter");
+		titleLabel.setToolTipText(AUTHOR_STRING);
+		titleLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		titleLabel.setFont(new Font("Dialog", Font.BOLD, 30));
+		titleLabel.setEnabled(true);
+		container.add(titleLabel);
 		
-		Rate_given.setBounds(FIELD_X, LINE1_Y, FIELD_WIDTH, LINE_HEIGHT);
-		Rate_given.setText("");
-		Rate_given.setFont(new Font("Dialog", Font.PLAIN, 18));
-		Rate_given.addKeyListener(new KeyAdapter() {
+		inputRateTextfield.setBounds(FIELD_X, LINE1_Y, FIELD_WIDTH, LINE_HEIGHT);
+		inputRateTextfield.setText("");
+		inputRateTextfield.setFont(new Font("Dialog", Font.PLAIN, 18));
+		inputRateTextfield.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent evt) {
-				Helper.sanitiseField(Rate_given, false);
+				Helper.sanitiseField(inputRateTextfield, false);
 				calculate();
 			}
 		});
-		container.add(Rate_given);
+		container.add(inputRateTextfield);
 		
-		Unit_Size_given.setBounds(SIZE_UNIT_X, LINE1_Y, SIZE_UNIT_WIDTH, LINE_HEIGHT);
-		Unit_Size_given
-				.setModel(new DefaultComboBoxModel<String>(new String[] { "b", "Kb", "Mb", "Gb", "B", "KB", "MB", "GB" }));
-		Unit_Size_given.setSelectedIndex(1);
-		Unit_Size_given.setMaximumRowCount(8);
-		Unit_Size_given.setFont(new Font("Dialog", Font.PLAIN, 16));
-		Unit_Size_given.setEditable(false);
-		Unit_Size_given.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				calculate();
-			}
-		});
-		container.add(Unit_Size_given);
+		inputSizeUnitCombobox.setBounds(SIZE_UNIT_X, LINE1_Y, SIZE_UNIT_WIDTH, LINE_HEIGHT);
+		inputSizeUnitCombobox
+				.setModel(new DefaultComboBoxModel<>(new String[]{"b", "Kb", "Mb", "Gb", "B", "KB", "MB", "GB"}));
+		inputSizeUnitCombobox.setSelectedIndex(1);
+		inputSizeUnitCombobox.setMaximumRowCount(8);
+		inputSizeUnitCombobox.setFont(new Font("Dialog", Font.PLAIN, 16));
+		inputSizeUnitCombobox.setEditable(false);
+		inputSizeUnitCombobox.addActionListener(evt -> calculate());
+		container.add(inputSizeUnitCombobox);
 		
-		K_given_1024.setBounds(K_X, LINE1_K1_Y, K_WIDTH, K_HEIGHT);
-		K_given_1024.setText("K = 1024");
-		K_given_1024.setSelected(true);
-		K_given_1024.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				calculate();
-			}
-		});
-		container.add(K_given_1024);
+		inputK1024Radiobutton.setBounds(K_X, LINE1_K1_Y, K_WIDTH, K_HEIGHT);
+		inputK1024Radiobutton.setText("K = 1024");
+		inputK1024Radiobutton.setSelected(true);
+		inputK1024Radiobutton.addActionListener(evt -> calculate());
+		container.add(inputK1024Radiobutton);
 		
-		K_given_1000.setBounds(K_X, LINE1_K2_Y, K_WIDTH, K_HEIGHT);
-		K_given_1000.setText("K = 1000");
-		K_given_1000.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				calculate();
-			}
-		});
-		container.add(K_given_1000);
+		inputK1000Radiobutton.setBounds(K_X, LINE1_K2_Y, K_WIDTH, K_HEIGHT);
+		inputK1000Radiobutton.setText("K = 1000");
+		inputK1000Radiobutton.addActionListener(evt -> calculate());
+		container.add(inputK1000Radiobutton);
 		
-		K_given.add(K_given_1024);
-		K_given.add(K_given_1000);
+		inputKButtongroup.add(inputK1024Radiobutton);
+		inputKButtongroup.add(inputK1000Radiobutton);
 		
-		horizontalLine.setBounds(EDGE, SEP_Y, SEP_WIDTH, 1);
-		container.add(horizontalLine);
+		hSeparator.setBounds(EDGE, SEP_Y, SEP_WIDTH, 1);
+		container.add(hSeparator);
 		
-		Rate_wanted.setBounds(EDGE, LINE2_Y, FIELD_WIDTH, LINE_HEIGHT);
-		Rate_wanted.setText("0");
-		Rate_wanted.setEditable(false);
-		Rate_wanted.setFont(new Font("Dialog", Font.PLAIN, 18));
-		Rate_wanted.setSelectionEnd(0);
-		Rate_wanted.setSelectionStart(0);
-		container.add(Rate_wanted);
+		resultRateTextfield.setBounds(EDGE, LINE2_Y, FIELD_WIDTH, LINE_HEIGHT);
+		resultRateTextfield.setText("0");
+		resultRateTextfield.setEditable(false);
+		resultRateTextfield.setFont(new Font("Dialog", Font.PLAIN, 18));
+		resultRateTextfield.setSelectionEnd(0);
+		resultRateTextfield.setSelectionStart(0);
+		container.add(resultRateTextfield);
 		
-		Unit_Size_wanted.setBounds(SIZE_UNIT_X, LINE2_Y, SIZE_UNIT_WIDTH, LINE_HEIGHT);
-		Unit_Size_wanted.setEditable(false);
-		Unit_Size_wanted.setFont(new Font("Dialog", Font.PLAIN, 16));
-		Unit_Size_wanted.setMaximumRowCount(8);
-		Unit_Size_wanted
-				.setModel(new DefaultComboBoxModel<String>(new String[] { "b", "Kb", "Mb", "Gb", "B", "KB", "MB", "GB" }));
-		Unit_Size_wanted.setSelectedIndex(1);
-		Unit_Size_wanted.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				calculate();
-			}
-		});
-		container.add(Unit_Size_wanted);
+		resultSizeUnitCombobox.setBounds(SIZE_UNIT_X, LINE2_Y, SIZE_UNIT_WIDTH, LINE_HEIGHT);
+		resultSizeUnitCombobox.setEditable(false);
+		resultSizeUnitCombobox.setFont(new Font("Dialog", Font.PLAIN, 16));
+		resultSizeUnitCombobox.setMaximumRowCount(8);
+		resultSizeUnitCombobox
+				.setModel(new DefaultComboBoxModel<>(new String[]{"b", "Kb", "Mb", "Gb", "B", "KB", "MB", "GB"}));
+		resultSizeUnitCombobox.setSelectedIndex(1);
+		resultSizeUnitCombobox.addActionListener(evt -> calculate());
+		container.add(resultSizeUnitCombobox);
 		
-		K_wanted_1024.setBounds(K_X, LINE2_K1_Y, K_WIDTH, K_HEIGHT);
-		K_wanted_1024.setText("K = 1024");
-		K_wanted_1024.setSelected(true);
-		K_wanted_1024.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				calculate();
-			}
-		});
-		container.add(K_wanted_1024);
+		resultK1024Radiobutton.setBounds(K_X, LINE2_K1_Y, K_WIDTH, K_HEIGHT);
+		resultK1024Radiobutton.setText("K = 1024");
+		resultK1024Radiobutton.setSelected(true);
+		resultK1024Radiobutton.addActionListener(evt -> calculate());
+		container.add(resultK1024Radiobutton);
 		
-		K_wanted_1000.setBounds(K_X, LINE2_K2_Y, K_WIDTH, K_HEIGHT);
-		K_wanted_1000.setText("K = 1000");
-		K_wanted_1000.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				calculate();
-			}
-		});
-		container.add(K_wanted_1000);
+		resultK1000Radiobutton.setBounds(K_X, LINE2_K2_Y, K_WIDTH, K_HEIGHT);
+		resultK1000Radiobutton.setText("K = 1000");
+		resultK1000Radiobutton.addActionListener(evt -> calculate());
+		container.add(resultK1000Radiobutton);
 		
-		K_wanted.add(K_wanted_1024);
-		K_wanted.add(K_wanted_1000);
-		Unit_Time_given.setBounds(TIME_UNIT_X, LINE1_Y, TIME_UNIT_WIDTH, LINE_HEIGHT);
-		Unit_Time_given.setModel(new DefaultComboBoxModel<String>(new String[] { "s", "min", "h", "d" }));
-		Unit_Time_given.setSelectedIndex(0);
-		Unit_Time_given.setEditable(false);
-		Unit_Time_given.setFont(new Font("Dialog", Font.PLAIN, 16));
-		Unit_Time_given.setMaximumRowCount(4);
-		Unit_Time_given.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				calculate();
-			}
-		});
-		container.add(Unit_Time_given);
+		resultKButtongroup.add(resultK1024Radiobutton);
+		resultKButtongroup.add(resultK1000Radiobutton);
+		inputTimeUnitCombobox.setBounds(TIME_UNIT_X, LINE1_Y, TIME_UNIT_WIDTH, LINE_HEIGHT);
+		inputTimeUnitCombobox.setModel(new DefaultComboBoxModel<>(new String[]{"s", "min", "h", "d"}));
+		inputTimeUnitCombobox.setSelectedIndex(0);
+		inputTimeUnitCombobox.setEditable(false);
+		inputTimeUnitCombobox.setFont(new Font("Dialog", Font.PLAIN, 16));
+		inputTimeUnitCombobox.setMaximumRowCount(4);
+		inputTimeUnitCombobox.addActionListener(evt -> calculate());
+		container.add(inputTimeUnitCombobox);
 		
-		Unit_Time_wanted.setBounds(TIME_UNIT_X, LINE2_Y, TIME_UNIT_WIDTH, LINE_HEIGHT);
-		Unit_Time_wanted.setModel(new DefaultComboBoxModel<String>(new String[] { "s", "min", "h", "d" }));
-		Unit_Time_wanted.setEditable(false);
-		Unit_Time_wanted.setFont(new Font("Dialog", Font.PLAIN, 16));
-		Unit_Time_wanted.setMaximumRowCount(4);
-		Unit_Time_wanted.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				calculate();
-			}
-		});
-		container.add(Unit_Time_wanted);
+		resultTimeUnitCombobo.setBounds(TIME_UNIT_X, LINE2_Y, TIME_UNIT_WIDTH, LINE_HEIGHT);
+		resultTimeUnitCombobo.setModel(new DefaultComboBoxModel<>(new String[]{"s", "min", "h", "d"}));
+		resultTimeUnitCombobo.setEditable(false);
+		resultTimeUnitCombobo.setFont(new Font("Dialog", Font.PLAIN, 16));
+		resultTimeUnitCombobo.setMaximumRowCount(4);
+		resultTimeUnitCombobo.addActionListener(evt -> calculate());
+		container.add(resultTimeUnitCombobo);
 		
-		Text_Slash1.setBounds(SLASH_X, LINE1_SLASH_Y, SLASH_WIDTH, SLASH_HEIGHT);
-		Text_Slash1.setText("/");
-		Text_Slash1.setFont(new Font("Dialog", Font.PLAIN, 40));
-		Text_Slash1.setHorizontalAlignment(SwingConstants.CENTER);
-		Text_Slash1.setHorizontalTextPosition(SwingConstants.CENTER);
-		container.add(Text_Slash1);
+		inputSlashLabel.setBounds(SLASH_X, LINE1_SLASH_Y, SLASH_WIDTH, SLASH_HEIGHT);
+		inputSlashLabel.setText("/");
+		inputSlashLabel.setFont(new Font("Dialog", Font.PLAIN, 40));
+		inputSlashLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		inputSlashLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+		container.add(inputSlashLabel);
 		
-		Text_Slash2.setBounds(SLASH_X, LINE2_SLASH_Y, SLASH_WIDTH, SLASH_HEIGHT);
-		Text_Slash2.setText("/");
-		Text_Slash2.setFont(new Font("Dialog", Font.PLAIN, 40));
-		Text_Slash2.setHorizontalAlignment(SwingConstants.CENTER);
-		Text_Slash2.setHorizontalTextPosition(SwingConstants.CENTER);
-		container.add(Text_Slash2);
+		resultSlashLabel.setBounds(SLASH_X, LINE2_SLASH_Y, SLASH_WIDTH, SLASH_HEIGHT);
+		resultSlashLabel.setText("/");
+		resultSlashLabel.setFont(new Font("Dialog", Font.PLAIN, 40));
+		resultSlashLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		resultSlashLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+		container.add(resultSlashLabel);
 		
 		
 		setTooltips();
@@ -249,60 +218,58 @@ public class BitrateConverter extends JFrame {
 		return null;
 	}
 	
-
+	
 	private void calculate() {
-		double check = Double.parseDouble(Rate_given.getText());
+		double check = Double.parseDouble(inputRateTextfield.getText());
 		if (!(check > 0.)) {
-			Rate_wanted.setText("0");
+			resultRateTextfield.setText("0");
 			return;
 		}
 		
-		BigDecimal value = new BigDecimal(0);
-		value = BigDecimal.valueOf(Double.parseDouble(Rate_given.getText()));
-
-		long[] sizeToBits = new long[10], SizeToUnit = new long[10];
-		if (getSelectedRadioButton(K_given).equals("K = 1000")) {
+		BigDecimal value;
+		value = BigDecimal.valueOf(Double.parseDouble(inputRateTextfield.getText()));
+		
+		long[] sizeToBits;
+		long[] sizeToUnit;
+		if (Objects.equals(getSelectedRadioButton(inputKButtongroup), "K = 1000")) {
 			sizeToBits = new long[] { 1L, 1000L, 1000000L, 1000000000L, 8L, 8000L, 8000000L, 8000000000L };
 		} else {
 			sizeToBits = new long[] { 1L, 1024L, 1048576L, 1073741824L, 8L, 8192L, 8388608L, 8589934592L };
 		}
-		if (getSelectedRadioButton(K_wanted).equals("K = 1000")) {
-			SizeToUnit = new long[] { 1L, 1000L, 1000000L, 1000000000L, 8L, 8000L, 8000000L, 8000000000L };
+		if (Objects.equals(getSelectedRadioButton(resultKButtongroup), "K = 1000")) {
+			sizeToUnit = new long[] { 1L, 1000L, 1000000L, 1000000000L, 8L, 8000L, 8000000L, 8000000000L };
 		} else {
-			SizeToUnit = new long[] { 1L, 1024L, 1048576L, 1073741824L, 8L, 8192L, 8388608L, 8589934592L };
+			sizeToUnit = new long[] { 1L, 1024L, 1048576L, 1073741824L, 8L, 8192L, 8388608L, 8589934592L };
 		}
 		int[] timeConversion = { 1, 60, 3600, 86400 };
 		
-		value = value.multiply(BigDecimal.valueOf(sizeToBits[Unit_Size_given.getSelectedIndex()]
-				* (long) timeConversion[Unit_Time_wanted.getSelectedIndex()]));
-		value = value.divide(BigDecimal.valueOf(SizeToUnit[Unit_Size_wanted.getSelectedIndex()]
-				* (long) timeConversion[Unit_Time_given.getSelectedIndex()]), 4, RoundingMode.HALF_UP);
+		value = value.multiply(BigDecimal.valueOf(sizeToBits[inputSizeUnitCombobox.getSelectedIndex()]
+				* (long) timeConversion[resultTimeUnitCombobo.getSelectedIndex()]));
+		value = value.divide(BigDecimal.valueOf(sizeToUnit[resultSizeUnitCombobox.getSelectedIndex()]
+				* (long) timeConversion[inputTimeUnitCombobox.getSelectedIndex()]), 4, RoundingMode.HALF_UP);
 		
 		String valueString = value.toString();
 		if (valueString.endsWith(".0000")) {
 			valueString = valueString.split("\\.", 0)[0];
 		}
-		Rate_wanted.setText(valueString);
+		resultRateTextfield.setText(valueString);
 	}
 	
 	public void setTooltips() {
-		Rate_given.setToolTipText("Enter the bitrate you want to convert here");
-		Unit_Size_given.setToolTipText("Select the unit for the given bitrate");
-		Unit_Time_given.setToolTipText("Select the unit for the given bitrate");
-		K_given_1024.setToolTipText("1 MB = 1024 B");
-		K_given_1000.setToolTipText("1 MB = 1000 B");
-		Unit_Size_wanted.setToolTipText("Select the unit for the result");
-		Unit_Time_wanted.setToolTipText("Select the unit for the result");
-		K_wanted_1024.setToolTipText("1 MB = 1024 B");
-		K_wanted_1000.setToolTipText("1 MB = 1000 B");
+		inputRateTextfield.setToolTipText("Enter the bitrate you want to convert here");
+		inputSizeUnitCombobox.setToolTipText("Select the unit for the given bitrate");
+		inputTimeUnitCombobox.setToolTipText("Select the unit for the given bitrate");
+		inputK1024Radiobutton.setToolTipText("1 MB = 1024 B");
+		inputK1000Radiobutton.setToolTipText("1 MB = 1000 B");
+		resultSizeUnitCombobox.setToolTipText("Select the unit for the result");
+		resultTimeUnitCombobo.setToolTipText("Select the unit for the result");
+		resultK1024Radiobutton.setToolTipText("1 MB = 1024 B");
+		resultK1000Radiobutton.setToolTipText("1 MB = 1000 B");
 	}
 	
 	
 	
 	public static void main(String[] args) {
-		
 		new BitrateConverter(null);
-		
 	}
-	
 }
